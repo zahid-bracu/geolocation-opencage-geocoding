@@ -13,15 +13,25 @@
   <body>
     <div class="container">
         <h1 class="text-center my-5 ">Geolocation With OpenCage Geocoding</h1>
+        
         <button class="btn btn-primary mx-auto d-block" onclick="checkBrowser()">Check Browser Compatibility</button>
 
         <button class="btn btn-success btn d-block mx-auto my-5" onclick="currentPosition()">Click Here</button>
 
+        <!-- current Location -->
         <h4 id="location" class="text-center mt-5"></h4>
-
         <h5 id="lat" class="text-center my-1"></h5>
         <h5 id="lng" class="text-center my-1"></h5>
-        
+
+
+        <!-- watch current position -->
+        <button class="btn btn-info btn d-block mx-auto my-5" onclick="watchCurrentPosition()">Click Here</button>
+
+        <!-- watch position -->
+
+        <h4 id="watchLocation" class="text-center mt-5"></h4>
+        <h5 id="watchLat" class="text-center my-1"></h5>
+        <h5 id="watchLng" class="text-center my-1"></h5>
     </div>
 
     <script>
@@ -33,7 +43,28 @@
               }
           }
 
+          // watch position
+          function watchCurrentPosition(){
+              navigator.geolocation.watchPosition((position)=>{
+                  const LAT=position.coords.latitude;
+                  const LNG=position.coords.longitude;
+                  console.log("Lat : "+LAT+ " and, Long : "+LNG);
 
+                  fetch(`https://api.opencagedata.com/geocode/v1/json?q=${LAT}+${LNG}&key=d2e1ff61a5ba4520a0ab115f38e2e7a9`)
+                    .then(response => response.json())
+                    .then(json => {
+                        console.log(json.results[0].formatted)
+                        document.getElementById('watchLocation').innerText=json.results[0].formatted;
+                        document.getElementById('watchLat').innerText=`LAT : ${LAT}`;
+                        document.getElementById('watchLng').innerText=`LNG : ${LNG}`;
+                    });
+              },(error)=>{
+                console.log(error.code);
+              })
+          }
+
+
+          // current position
           function currentPosition(){
               navigator.geolocation.getCurrentPosition((position)=>{
                   const LAT=position.coords.latitude;
@@ -48,6 +79,8 @@
                         document.getElementById('lat').innerText=`LAT : ${LAT}`;
                         document.getElementById('lng').innerText=`LNG : ${LNG}`;
                     });
+              },(error)=>{
+                console.log(error.code);
               })
           }
     </script>
