@@ -16,7 +16,7 @@
         
         <button class="btn btn-primary mx-auto d-block" onclick="checkBrowser()">Check Browser Compatibility</button>
 
-        <button class="btn btn-success btn d-block mx-auto my-5" onclick="currentPosition()">Click Here</button>
+        <button class="btn btn-success btn d-block mx-auto my-5" onclick="currentPosition()">Click Here to Get Position</button>
 
         <!-- current Location -->
         <h4 id="location" class="text-center mt-5"></h4>
@@ -24,14 +24,17 @@
         <h5 id="lng" class="text-center my-1"></h5>
 
 
-        <!-- watch current position -->
-        <button class="btn btn-info btn d-block mx-auto my-5" onclick="watchCurrentPosition()">Click Here</button>
+        <button class="btn btn-info btn d-block mx-auto my-5" onclick="watchCurrentPosition()">Start Watch</button>
+
+        <!-- clear current position -->
+        <button class="btn btn-info btn d-block mx-auto my-5" onclick="stopWatchPosition()">Clear Watch</button>
 
         <!-- watch position -->
 
-        <h4 id="watchLocation" class="text-center mt-5"></h4>
-        <h5 id="watchLat" class="text-center my-1"></h5>
-        <h5 id="watchLng" class="text-center my-1"></h5>
+
+        <h5 id="watchLocation" class="text-center mt-5"></h5>
+        <h6 id="watchLat" class="text-center my-1"></h6>
+        <h6 id="watchLng" class="text-center my-1"></h6>
     </div>
 
     <script>
@@ -43,9 +46,10 @@
               }
           }
 
+          var id;
           // watch position
           function watchCurrentPosition(){
-              navigator.geolocation.watchPosition((position)=>{
+            id =navigator.geolocation.watchPosition((position)=>{
                   const LAT=position.coords.latitude;
                   const LNG=position.coords.longitude;
                   console.log("Lat : "+LAT+ " and, Long : "+LNG);
@@ -58,11 +62,20 @@
                         document.getElementById('watchLat').innerText=`LAT : ${LAT}`;
                         document.getElementById('watchLng').innerText=`LNG : ${LNG}`;
                     });
-              },(error)=>{
+              },(error)=>{ //error handle
                 console.log(error.code);
               })
           }
 
+          // see current position
+          // window.onload = watchCurrentPosition();
+
+
+          // stop current position watching
+
+          function stopWatchPosition(){
+            navigator.geolocation.clearWatch(id);
+          }
 
           // current position
           function currentPosition(){
@@ -79,7 +92,7 @@
                         document.getElementById('lat').innerText=`LAT : ${LAT}`;
                         document.getElementById('lng').innerText=`LNG : ${LNG}`;
                     });
-              },(error)=>{
+              },(error)=>{ //error hanle
                 console.log(error.code);
               })
           }
